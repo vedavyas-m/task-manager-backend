@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const tasks = require("./routes/tasks");
-const port = 5000;
+const connectToDB = require("./db/connect");
+const port = process.env.PORT;
 
 // middleware
 app.use(express.json());
@@ -14,10 +16,18 @@ app.use(express.json());
 // app.delete("/api/v1/tasks/:id")    -delete task
 
 app.use("/api/v1/tasks", tasks);
-app.listen(port, (err) => {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  console.log(`server is listening on port ${port}`);
-});
+
+const start = async () => {
+  try {
+    await connectToDB(process.env.MONGO_URI);
+    app.listen(port, (err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(`server is listening on port ${port}`);
+    });
+  } catch (error) {}
+};
+
+start();
