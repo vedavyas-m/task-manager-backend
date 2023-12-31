@@ -1,12 +1,16 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 require("dotenv").config();
 const tasks = require("./routes/tasks");
 const connectToDB = require("./db/connect");
 const port = process.env.PORT;
 
 // middleware
+app.use(cors());
 app.use(express.json());
+// static files
+app.use(express.static("./public"));
 
 // routes
 // app.get("/api/v1/tasks")           -get all tasks
